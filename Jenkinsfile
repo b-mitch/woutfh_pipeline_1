@@ -41,25 +41,25 @@ pipeline {
                 }
             }
         }
-        stage('Run Django Tests') {
-            steps {
-                sshagent(credentials: ['ssh_key']) {
-                    script {
-                        // Delete the container ID file if it exists
-                        sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'rm -f container_id.txt'"
+        // stage('Run Django Tests') {
+        //     steps {
+        //         sshagent(credentials: ['ssh_key']) {
+        //             script {
+        //                 // Delete the container ID file if it exists
+        //                 sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'rm -f container_id.txt'"
 
-                        // Save the container ID to a file
-                        sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'docker ps -q --filter ancestor=bmitchum/woutfh_api-prod:${IMAGE_VERSION} > container_id.txt'"
+        //                 // Save the container ID to a file
+        //                 sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'docker ps -q --filter ancestor=bmitchum/woutfh_api-prod:${IMAGE_VERSION} > container_id.txt'"
                         
-                        // Retrieve the container ID from the file
-                        def containerId = sh(script: "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'cat container_id.txt'", returnStdout: true).trim()
+        //                 // Retrieve the container ID from the file
+        //                 def containerId = sh(script: "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'cat container_id.txt'", returnStdout: true).trim()
 
-                        // Run Docker command using the retrieved container ID
-                        sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'docker exec ${containerId} python3 manage.py test --keepdb'"
-                    }
-                }
-            }
-        }
+        //                 // Run Docker command using the retrieved container ID
+        //                 sh "ssh -i ~/.ssh/id_rsa ec2-user@44.214.134.6 'docker exec ${containerId} python3 manage.py test --keepdb'"
+        //             }
+        //         }
+        //     }
+        // } This is done by github actions on Dev branch now
         stage('Manual Approval of Development') {
             steps {
                 input 'Proceed with deployment to green production?'
