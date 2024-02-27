@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework_simplejwt.tokens import AccessToken
 from users.models import CustomUser, Availability
 
 class RegisterViewTest(APITestCase):
@@ -34,7 +35,7 @@ class UserViewTest(APITestCase):
     def test_get_user_authenticated(self):
         url = '/user/'
         user = CustomUser.objects.create(username='testuser')
-        token = user.auth_token
+        token = AccessToken.for_user(user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -49,7 +50,7 @@ class DayAvailabilityViewTest(APITestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username='testuser')
         self.availability = Availability.objects.create(
-            user=self.user, 
+            user_id=self.user, 
             year=2024, 
             month=2, 
             day=7, 
@@ -74,7 +75,7 @@ class UpdateAvailabilityViewTest(APITestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username='testuser')
         self.availability = Availability.objects.create(
-            user=self.user, 
+            user_id=self.user, 
             year=2024, 
             month=2, 
             day=7, 
@@ -84,7 +85,7 @@ class UpdateAvailabilityViewTest(APITestCase):
     def test_update_availability_authenticated(self):
         url = '/update_availability/2024/2/7/'
         user = CustomUser.objects.create(username='testuser')
-        token = user.auth_token
+        token = AccessToken.for_user(user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         data = {'times': {'10:00': '13:00'}}
         response = self.client.put(url, data)

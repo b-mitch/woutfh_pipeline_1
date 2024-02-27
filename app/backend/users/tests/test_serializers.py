@@ -3,7 +3,7 @@
 from django.test import TestCase
 from users.serializers import CustomUserSerializer, AvailabilitySerializer
 from users.models import CustomUser, Availability
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.test import APIRequestFactory, force_authenticate
 from django.contrib.auth.models import AnonymousUser
 
@@ -30,7 +30,7 @@ class AvailabilitySerializerTests(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = CustomUser.objects.create(username='testuser', email='test@example.com')
-        self.token = Token.objects.create(user=self.user)
+        self.token = AccessToken.for_user(self.user)
         self.availability_data = {
             'year': 2023,
             'month': 1,

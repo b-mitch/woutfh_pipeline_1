@@ -1,6 +1,7 @@
 from django.test import TestCase
 from contact.models import Contact
 from django.utils import timezone
+from datetime import timedelta
 
 class ContactModelTests(TestCase):
     def setUp(self):
@@ -13,7 +14,8 @@ class ContactModelTests(TestCase):
         )
     # Test the contact creation
     def test_contact_creation(self):
-        self.assertEqual(self.contact.date, timezone.now())
+        difference = abs(self.contact.date - timezone.now())
+        self.assertLessEqual(difference, timedelta(milliseconds=10))
         self.assertEqual(self.contact.name, 'Test User')
         self.assertEqual(self.contact.email, 'test@gmail.com')
         self.assertEqual(self.contact.message, 'Test message')

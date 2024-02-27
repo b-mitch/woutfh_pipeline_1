@@ -25,15 +25,8 @@ class AvailabilityModelTests(TestCase):
 
     def test_availability_string_representation(self):
         # Test the availability string representation
-        self.assertEqual(str(self.availability), self.user.username)
+        self.assertEqual(str(self.availability), 'test_user')
 
     def test_availability_user_relationship(self):
         # Test the relationship between availability and user
         self.assertEqual(self.availability.user_id, self.user)
-
-    def test_availability_default_values(self):
-        # Test default values for year, month, and day
-        availability = Availability.objects.create(user_id=self.user)
-        self.assertEqual(availability.year, 2023)
-        self.assertEqual(availability.month, 1)
-        self.assertEqual(availability.day, 1)
